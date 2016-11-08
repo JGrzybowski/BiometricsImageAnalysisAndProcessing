@@ -1,0 +1,48 @@
+---
+title: "Sprawozdanie 1"
+author: "Jan Grzybowski"
+date: "7 listopada 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("imageHelpers.R")
+```
+
+#Funkcje do obróbki obrazów
+
+## Ładowanie obrazów
+```{r Image loading}
+img = loadImage("eye.jpg")
+```
+<center>![](eye.jpg)</center>
+
+## Konwersja do skali szarości
+```{r Grayscale}
+saveImage(img %>% grayscaled(), "results/eye_gray.jpg")
+```
+<center>![](results/eye_gray.jpg)</center>
+
+## Inwersja
+```{r Inversion}
+saveImage(img %>% inverted(), "results/eye_inverted.jpg")
+```
+<center>![](results/eye_inverted.jpg)</center>
+
+## Regulacja jasności
+```{r Lighting}
+saveImage(img %>% brightned(0.2), "results/eye_brightned.jpg")
+saveImage(img %>% brightned(-0.2), "results/eye_darkened.jpg")
+```
+<center>
+  ![](results/eye_brightned.jpg)
+  ![](results/eye_darkened.jpg)
+</center>
+
+## Regulacja kontrastu
+```{r Contrast}
+saveImage(img %>% contrasted(), "results/eye_contrasted.jpg")
+```
+<center>![](results/eye_contrasted.jpg)</center>
+
