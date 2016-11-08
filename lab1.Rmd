@@ -46,3 +46,20 @@ saveImage(img %>% contrasted(), "results/eye_contrasted.jpg")
 ```
 <center>![](results/eye_contrasted.jpg)</center>
 
+## Binaryzacja obrazu
+```{r Binarization}
+binaryImage = img %>% 
+    contrasted() %>% 
+    grayscaled() %>%
+    binarized(function(x) {x < 0.4})
+
+saveImage(binaryImage, "results/eye_binarized.jpg")
+```
+<center>![](results/eye_binarized.jpg)</center>
+
+```{r Projections}
+saveImage(binaryImage %>% verticalProjection(), "results/vertical.jpg")
+saveImage(binaryImage %>% horizontalProjection(), "results/horizontal.jpg")
+```
+<center>![](results/vertical.jpg)</center>
+<center>![](results/horizontal.jpg)</center>

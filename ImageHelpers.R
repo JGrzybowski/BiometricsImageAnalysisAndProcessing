@@ -9,7 +9,12 @@ clip <- function(x, min, max){
 loadImage <- function(filename) { readJPEG(filename) }
 getHeight <- function(image) { dim(image)[1] }
 getWidth <- function(image) { dim(image)[2] }
-getChannels <- function(image) { dim(image)[3] }
+getChannels <- function(image) { 
+  if(is.na(dim(image)[3])) 
+    1
+  else 
+    dim(image)[3]  
+}
 saveImage <- function(image, filename) { writeJPEG(image, filename, quality = 1) }
 
 ## ---- Color Convertion ----
@@ -43,4 +48,32 @@ contrasted <- function(image, K = 0.85, contrastColor = 0.5){
   }
   
   clip(imgt , 0, 1)
+}
+
+## ---- Binariztion ----
+binarized <- function(image, predicate){
+  ifelse(predicate(image), 0, 1)
+}
+
+verticalProjection <- function(image){
+  if(getChannels(image) == 3)
+    image %>% apply(c(2,3), sort)
+  else
+    image %>% apply(2, sort)
+}
+
+horizontalProjection <- function(image){
+  if(getChannels(image) == 3) 
+    image %>% apply(c(1,3), sort) %>% aperm(c(2,1,3))
+  else
+    image %>% apply(1, sort) %>% aperm(c(2,1))
+}
+
+separateChannel <- function(image, layerIndex) { image[,,layerIndex] }
+
+filterChannel <- function(image, layerIndex) { 
+  channels = 1:getChannels(image)
+  channels = channels[channels != layerIndex]
+  image[,,channels] = 0
+  image
 }
