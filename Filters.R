@@ -22,7 +22,18 @@ subfilter <- function(image, filtr){
 
 ## ---- Filters ----
 
+filter.Gaussian <- function(image, size = 3){
+  if (size == 3)
+    filtr = matrix(c(1,2,1,2,4,2,1,2,1), ncol = 3)
+  else
+    stop("NOT IMPLEMENTED!")
+  
+  image %>% filterImage(filter)
+}
 
+filter.mean <- function(image, size = 3){
+  image %>% filterImage(matrix(1, size, size))
+}
 
 ## ---- Tests ----
 test.subfiltering <- function(){
