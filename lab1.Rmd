@@ -7,7 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("imageHelpers.R")
+source("ImageHelpers.R")
+source("Normalization.R")
 ```
 
 #Funkcje do obróbki obrazów
@@ -15,6 +16,7 @@ source("imageHelpers.R")
 ## Ładowanie obrazów
 ```{r Image loading}
 img = loadImage("eye.jpg")
+dots = loadImage("dots.jpg")
 ```
 <center>![](eye.jpg)</center>
 
@@ -63,3 +65,14 @@ saveImage(binaryImage %>% horizontalProjection(), "results/horizontal.jpg")
 ```
 <center>![](results/vertical.jpg)</center>
 <center>![](results/horizontal.jpg)</center>
+
+## Normalizacja
+
+```{r Histogram Normalization}
+saveImage(dots %>% extrudeHistogram(), "dotsExtrudeGlobal.jpg")
+saveImage(dots %>% extrudeHistogram(global = F), "dotsExtrudeLocal.jpg")
+
+```
+<center>![](dots.jpg)</center>
+<center>![](dotsExtrudeGlobal.jpg)</center>
+<center>![](dotsExtrudeLocal.jpg)</center>
