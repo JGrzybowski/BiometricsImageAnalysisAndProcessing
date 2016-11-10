@@ -22,7 +22,7 @@ grayscaled <- function(image) {
   if (getChannels(image) == 1)
     return(image)
   else 
-    return(apply(img,c(1,2),sum)/getChannels(image))
+    return(apply(image,c(1,2),sum)/getChannels(image))
 }
 
 inverted <- function(image) {

@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 source("ImageHelpers.R")
 source("Normalization.R")
+source("Filters.R")
 ```
 
 #Funkcje do obróbki obrazów
@@ -76,3 +77,20 @@ saveImage(dots %>% extrudeHistogram(global = F), "dotsExtrudeLocal.jpg")
 <center>![](dots.jpg)</center>
 <center>![](dotsExtrudeGlobal.jpg)</center>
 <center>![](dotsExtrudeLocal.jpg)</center>
+
+## Filtrowanie
+
+```{r Gauss filter, cache=TRUE}
+saveImage(img %>% grayscaled() %>% filter.Gaussian(), "results/eye_Gauss.jpg")
+```
+<center>![](results/eye_Gauss.jpg)</center>
+
+```{r Mean filter, cache=TRUE}
+saveImage(img %>% filter.mean(), "results/eye_mean.jpg")
+```
+<center>![](results/eye_mean.jpg)</center>
+
+```{r Sobel filter}
+saveImage(img %>% filter.Sobel(1), "results/eye_Sobel.jpg")
+```
+
