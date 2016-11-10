@@ -2,16 +2,22 @@ source("ImageHelpers.R")
 
 ## ---- Filtering ----
 filterLayer <- function(layer, filtr){
-  resultLayer <- matrix(0, ncol = getWidth(layer), nrow = getHeight(layer))
-  for(w in 1: getWidth(layer))
-  for(h in 1: getHeight(layer))      
-  {
-      hrange = ((h-floor(getHeight(filtr)/2)) : (h+floor(getHeight(filtr)/2))) %>% 
-                  clip(1, getHeight(layer))
-      wrange = ((w-floor(getWidth(filtr)/2)) : (w+floor(getWidth(filtr)/2))) %>%
-                  clip(1, getWidth(layer))
-      resultLayer[h,w] = subfilter(layer[hrange,wrange], filtr)
-  }
+  filter2H = floor(getHeight(filtr)/2)
+  filter2W = floor(getWidth(filtr)/2)
+  
+  maxH = getHeight(layer)
+  maxW = getWidth(layer)
+  
+  args = expand.grid(1:maxH, 1:maxW)
+  
+  resultLayer <- matrix(apply(args, 1, 
+    function(hw){
+      hrange = ((hw[1]-filter2H) : (hw[1]+filter2H)) %>% clip(1, maxH)
+      wrange = ((hw[2]-filter2W) : (hw[2]+filter2W)) %>% clip(1, maxW)
+      subfilter(layer[hrange,wrange], filtr)
+    }),
+    nrow = maxH
+  )
   resultLayer
 }
 
