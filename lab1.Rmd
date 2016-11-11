@@ -80,12 +80,12 @@ saveImage(dots %>% extrudeHistogram(global = F), "dotsExtrudeLocal.jpg")
 
 ## Filtrowanie
 
-```{r Gauss filter, cache=TRUE}
+```{r Gauss filter}
 saveImage(img %>% grayscaled() %>% filter.Gaussian(), "results/eye_Gauss.jpg")
 ```
 <center>![](results/eye_Gauss.jpg)</center>
 
-```{r Mean filter, cache=TRUE}
+```{r Mean filter }
 saveImage(img %>% filter.mean(), "results/eye_mean.jpg")
 ```
 <center>![](results/eye_mean.jpg)</center>

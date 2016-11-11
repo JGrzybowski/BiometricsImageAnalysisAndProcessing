@@ -58,11 +58,17 @@ filter.Sobel <- function(image, edgeDirection, k = 1){
   image %>% filterImage(filtr)
 }
 
-filter.sharper <- function(image, k = 1){
-  filtr = matrix(c(-k/8),nrow = 3,ncol=3)
+filter.sharper <- function(image, g= 3, k = 6){
+  filtr = laplasian(g,k)
   filtr[2,2] = k+1
   
   image %>% filterImage(filtr)
+}
+
+laplasian <- function(g,k){
+       if (g == 1) matrix(c(0,-k,0,-k,4*k,-k,0,-k,0)/4, nrow=3)
+  else if (g == 2) matrix(c(k,k,k,k, -8*k, k,k,k,k)/-8, nrow=3)
+  else if (g == 3) matrix(c(k,2*k,k,2*k, -12*k, 2*k,k,2*k,k)/-12, nrow=3)
 }
 
 ## ---- Tests ----

@@ -5,6 +5,12 @@ clip <- function(x, min, max){
   ifelse(x <= min,  min, ifelse(x >= max, max, x))
 }
 
+paint <- function(image){
+  plot.new()
+  rasterImage(image,0,0,1,1)
+  #saveImage(image, "/tempimages/temp.jpg")
+}
+
 ## ---- Image Loading ----
 loadImage <- function(filename) { readJPEG(filename) }
 getHeight <- function(image) { dim(image)[1] }
@@ -52,7 +58,7 @@ contrasted <- function(image, K = 0.85, contrastColor = 0.5){
 
 ## ---- Binariztion ----
 binarized <- function(image, predicate){
-  ifelse(predicate(image), 0, 1)
+  ifelse(predicate(image), 1, 0)
 }
 
 verticalProjection <- function(image){
