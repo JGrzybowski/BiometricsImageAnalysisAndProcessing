@@ -1,29 +1,22 @@
 source("ImageHelpers.R")
 
 ## ---- Filtering ----
-filterLayer <- function(layer, filtr){
-  filter2H = floor(getHeight(filtr)/2)
-  filter2W = floor(getWidth(filtr)/2)
+filterLayer <- function(layer, filtr = matrix(1,nrow=3,ncol=3)) {
   
   maxH = getHeight(layer)
   maxW = getWidth(layer)
   
-  args = expand.grid(1:maxH, 1:maxW)
+  indexes = as.vector(matrix(1:(maxH*maxW),ncol = maxW, nrow = maxH)[2:(maxH-1), 2:(maxW-1)])
   
-  resultLayer <- matrix(apply(args, 1, 
-    function(hw){
-      hrange = ((hw[1]-filter2H) : (hw[1]+filter2H)) %>% clip(1, maxH)
-      wrange = ((hw[2]-filter2W) : (hw[2]+filter2W)) %>% clip(1, maxW)
-      subfilter(layer[hrange,wrange], filtr)
-    }),
-    nrow = maxH
-  )
-  resultLayer
-}
-
-subfilter <- function(image, filtr){
-  m = image * filtr
-  sum(m)/sum(filtr)
+  dataIndexes = cbind(indexes-maxH-1, indexes-maxH, indexes-maxH+1,
+                      indexes-1, indexes+0, indexes+1, 
+                      indexes+maxH-1, indexes+maxH, indexes+maxH+1)
+  
+  windows = matrix(layer[dataIndexes], nrow=length(indexes))
+  
+  filteredvalues = windows %*% as.vector(filtr) / sum(filtr)
+  layer[indexes] = filteredvalues
+  layer
 }
 
 filterImage <- function(image, filtr){
@@ -72,18 +65,10 @@ laplasian <- function(g,k){
 }
 
 ## ---- Tests ----
-test.subfiltering <- function(){
-  i <- matrix(c(50,75,100,25,75,100,50,25,75,100,50,75)/100, byrow=T, nrow= 3)
-  filtr <- matrix(c(-1,1,0,1,2,1,0,1,-1), nrow = 3, byrow = T)
-  
-  subresult = subfilter(i[1:3,1:3], filtr)
-  if(subresult != sum(c(-50,75,0,75,200,50,0,100,-50)/100)/4)
-    warning("TEST FAILED!")
-}
 test.filtering <- function(){
   i <- matrix(c(1,2,1,3,4,3,1,2,4),ncol = 3, byrow = T)
   fil <- matrix(c(0,1,0,1,2,1,0,1,0), ncol=3)
-  expected <- matrix(c(9,12,9,15,18,18,9,15,21)/6,ncol= 3, byrow=T)
+  expected <- matrix(c(1,2,1,3,3,3,1,2,4),ncol= 3, byrow=T)
   result = filterImage(i,fil)
   if(T == all.equal(result, expected))
   {  }
@@ -94,5 +79,4 @@ test.filtering <- function(){
   }
 }
 
-test.subfiltering()
 test.filtering()

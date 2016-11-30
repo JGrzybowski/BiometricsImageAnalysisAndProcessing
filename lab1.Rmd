@@ -91,6 +91,6 @@ saveImage(img %>% filter.mean(), "results/eye_mean.jpg")
 <center>![](results/eye_mean.jpg)</center>
 
 ```{r Sobel filter}
-saveImage(img %>% filter.Sobel(1), "results/eye_Sobel.jpg")
+saveImage(img %>% grayscaled() %>% filter.Sobel(1), "results/eye_Sobel.jpg")
 ```
-
+<center>![](results/eye_Sobel.jpg)</center>
