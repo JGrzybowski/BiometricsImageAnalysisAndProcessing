@@ -1,0 +1,87 @@
+---
+title: "Sprawozdanie 2"
+author: "Jan Grzybowski"
+date: "10 listopada 2016"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("Filters.R")
+source("Normalization.R")
+source("Morphology.R")
+knitr::read_chunk('Morphology.R')
+```
+
+```{r}
+eye = loadImage("eye_scaled.jpg")
+```
+![](eye_scaled.jpg) 
+
+## Dylatacja i Erozja
+### Kod Dylatacji
+```{r Dilation}
+```
+### Kod Erozji
+```{r Erosion}
+```
+
+### Kod połączeń funkcji
+```{r Open Close}
+```
+
+
+## Wykrycie źrenicy
+Aby wykryć źrenicę podkręciłem trochę kontrast barw obrazu, a następnie rozmyłem obraz filtrem jednolitym aby spróbować pozbyć się refleksów światła. Taki obraz przeniosłem do skali szarości, a następnie zbinaryzowałem. Piksele miały mieć wartości poniżej 0.1 (ok 26 w skali 8 bitowej). Obraz został zerodowany co usunęło pojedyńcze pozostawione piksele.
+
+```{r Pupil}
+eye.pupil = 
+  eye %>% 
+  contrasted(K=0.9) %>%
+  filter.mean() %>% 
+  grayscaled() %>% 
+  binarized(function(x) x<0.1) %>%
+  opening(repetitions = 5)
+eye.pupil %>% saveImage("lab2/pupil.jpg")
+```
+![](eye_scaled.jpg) ![](lab2/pupil.jpg)
+
+## Wykrywanie tęczówki
+```{r Iris}
+eye.postprocessed = 
+  eye %>% 
+  contrasted(0.9) %>% 
+  extrudeHistogram() %>% 
+  grayscaled()
+eye.postprocessed %>% saveImage("lab2/postproc.jpg")
+eye.postprocessed %>% paint()
+
+irisDetection = 
+  eye.postprocessed %>% 
+  filter.sharper(g=3,k=6) %>% 
+  clip(0,1)
+irisDetection %>% saveImage("lab2/irisDetection.jpg")
+irisDetection %>% paint()
+
+iris = 
+  (irisDetection - eye.postprocessed) %>% 
+  clip(0,1)
+iris %>% saveImage("lab2/iris.jpg")
+iris %>% paint()
+```
+
+## Połączenie obrazów
+Oba móc pozbyć się części odbicia możemy odjąc obraz źrenicy od obrazu tęczówki, po czym pozostawić tylko kolory tam, gdzie nadal mamy wartość 1.
+
+```{r Result}
+diff = (iris - eye.pupil) %>% brightned(-0.075) %>% clip(0,1) 
+diff %>% paint()
+
+result = eye
+result[diff == 0] = 0 
+result %>% clip(0,1) %>% paint()
+```
+
+Prawdopodobnie dobrym pomysłem byłoby jeszcze obciąć obszar wykresuy na podstawie histogramóW poszeczgólnych kanałów obrazu źródłowego, tak aby otrzymać kwadrat obejmujący całą tęczówkę.
