@@ -1,8 +1,39 @@
 library(dplyr)
 
+REMOVED <- 0.0
+BORDER <- 0.30
+ELBOWS <- 0.0
+STICKY <- 0.0
+
+
 ## ---- KMM ----
-KMM <- function(){
+KMM <- function(layer){
+  maxH = getHeight(layer)
+  maxW = getWidth(layer)
+  # Oznaczanie 2
+  layerHash = CalculateLayerHash(layer)
+  borderIndexes = which((layer == 1) & (layerHash < 255) & (layerHash > 0))
+  layer[borderIndexes]  = BORDER
+  # Oznaczanie 3
+  elbowsHashes = 255 - (getPowSet(2^c(1,3,5,7))[2:16] %>% lapply(sum) %>% unlist)
+  layer[elbowsHashes] = ELBOWS
+  # Oznaczanie 4
+  stickyNeighboursHashes = c()
+  for(start in 0:7)
+    for(length in 2:4)
+      stickyNeighboursHashes = c(stickyNeighboursHashes, sum(2^((seq_len(length)+start) %% 7)))
   
+  layer[stickyNeighboursHashes] = STICKY
+  
+  # Usuwanie 4
+  layer[layer==STICKY] = REMOVED;
+  
+  # Wybieranie 
+  indicesToCheck = which(layer == BORDER)
+  
+  for()
+  
+  layer
 }
 
 ## ---- K3M ----
