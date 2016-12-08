@@ -16,9 +16,9 @@ knitr::read_chunk('Morphology.R')
 ```
 
 ```{r}
-eye = loadImage("eye_scaled.jpg")
+eye = loadImage("eye.jpg")
 ```
-![](eye_scaled.jpg) 
+![](eye.jpg) 
 
 ## Dylatacja i Erozja
 ### Kod Dylatacji
@@ -46,7 +46,7 @@ eye.pupil =
   opening(repetitions = 5)
 eye.pupil %>% saveImage("lab2/pupil.jpg")
 ```
-![](eye_scaled.jpg) ![](lab2/pupil.jpg)
+![](eye.jpg) ![](lab2/pupil.jpg)
 
 ## Wykrywanie tęczówki
 ```{r Iris}

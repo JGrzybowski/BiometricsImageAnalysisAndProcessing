@@ -1,0 +1,14 @@
+---
+title: "Sprawozdanie 3"
+author: "Jan Grzybowski"
+date: "1 grudnia 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("ImageHelpers.R")
+```
+
+
+

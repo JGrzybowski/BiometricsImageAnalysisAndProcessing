@@ -21,6 +21,7 @@ getChannels <- function(image) {
   else 
     dim(image)[3]  
 }
+
 saveImage <- function(image, filename) { writeJPEG(image, filename, quality = 1) }
 
 ## ---- Color Convertion ----
@@ -46,9 +47,11 @@ contrasted <- function(image, K = 0.85, contrastColor = 0.5){
     error("Wrong length of contrast Color or number of image channels")
   
   imgt = image
-  imgt[,,1] = K * (imgt[,,1] - contrastColor[1]) + contrastColor[1]
-  if(getChannels(imgt) > 1)
+  if(getChannels(imgt) == 1)
+    imgt = K * (imgt - contrastColor[1]) + contrastColor[1]
+  else if(getChannels(imgt) > 1)
   {
+    imgt[,,1] = K * (imgt[,,1] - contrastColor[1]) + contrastColor[1]
     imgt[,,2] = K * (imgt[,,2] - contrastColor[2]) + contrastColor[2]
     imgt[,,3] = K * (imgt[,,3] - contrastColor[3]) + contrastColor[3]
   }
