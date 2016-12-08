@@ -31,12 +31,14 @@ A0 <- function(layer){
 
 A1 <- function(layer,indexes){
   LUT = c(7, 14, 28, 56, 112, 131, 193, 224)
+  printToConsole(1)
   IterativePhase(layer, indexes, LUT)
 }
 
 A2 <- function(layer, indexes){
   LUT = c(7, 14, 15, 28, 30, 56, 60, 112, 120, 131, 135,
        193, 195, 224, 225, 240)
+  printToConsole(2)
   IterativePhase(layer, indexes, LUT)
 }
 
@@ -44,13 +46,15 @@ A3 <- function(layer, indexes){
   LUT = c(7, 14, 15, 28, 30, 31, 56, 60, 62, 112, 120,
        124, 131, 135, 143, 193, 195, 199, 224, 225, 227,
        240, 241, 248)
-  IterativePhase(layer, indexes, LUT)
+  printToConsole(3)
+  IterativePhase(layer, indexes, LUT)  
 }
 
 A4 <- function(layer, indexes){
   LUT = c(7, 14, 15, 28, 30, 31, 56, 60, 62, 63, 112, 120,
        124, 126, 131, 135, 143, 159, 193, 195, 199, 207,
        224, 225, 227, 231, 240, 241, 243, 248, 249, 252)
+  printToConsole(4)
   IterativePhase(layer, indexes, LUT)
 }
 
@@ -59,7 +63,8 @@ A5 <- function(layer, indexes){
        124, 126, 131, 135, 143, 159, 191, 193, 195, 199,
        207, 224, 225, 227, 231, 239, 240, 241, 243, 248,
        249, 251, 252, 254)
-  IterativePhase(layer, indexes, LUT)
+  printToConsole(5)
+  IterativePhase(layer, indexes, LUT)  
 }
 
 A1pix <- function(layer, indexes){
@@ -76,6 +81,7 @@ IterativePhase <- function(layer, borderIndexes, LUT){
   pixelHashes = CalculateLayerHash(layer)
   
   for(index in borderIndexes){
+    # printToConsole(index)
     removed = pixelHashes[index] %in% LUT
     if(removed){
       layer[index] = 0
@@ -85,6 +91,8 @@ IterativePhase <- function(layer, borderIndexes, LUT){
   
   layer
 }
+
+
 
 CalculateLayerHash <- function(layer){
   maxH = getHeight(layer)
@@ -111,8 +119,12 @@ CalculateLayerHash <- function(layer){
   matrix(pixelHashes, ncol = maxW, nrow = maxH)
 }
 
-i = matrix(c(0,0,0,0,0, 0,1,0,0,0, 0,0,1,1,0, 1,1,1,1,1, 0,1,1,1,0), ncol=5)
-  
+printToConsole <- function(iteration){
+  Sys.sleep(0.1)
+  print(iteration)
+  flush.console() 
+}
+
 test.finger <- function(iterations){
   img = finger
   for(i in 1:iterations)
