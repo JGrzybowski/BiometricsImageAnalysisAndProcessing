@@ -1,43 +1,68 @@
 library(dplyr)
+library(png)
+source("imageHelpers.R")
+source("helpers.R")
 
 REMOVED <- 0.0
-BORDER <- 0.30
-ELBOWS <- 0.0
-STICKY <- 0.0
+BORDER <- 0.2
+ELBOWS <- 0.3
+STICKY <- 0.4
 
 
 ## ---- KMM ----
-KMM <- function(layer){
+KMM.Iteration <- function(layer){
   maxH = getHeight(layer)
   maxW = getWidth(layer)
+  
   # Oznaczanie 2
   layerHash = CalculateLayerHash(layer)
   borderIndexes = which((layer == 1) & (layerHash < 255) & (layerHash > 0))
   layer[borderIndexes]  = BORDER
+  
   # Oznaczanie 3
   elbowsHashes = 255 - (getPowSet(2^c(1,3,5,7))[2:16] %>% lapply(sum) %>% unlist)
   layer[elbowsHashes] = ELBOWS
+  
   # Oznaczanie 4
   stickyNeighboursHashes = c()
   for(start in 0:7)
     for(length in 2:4)
       stickyNeighboursHashes = c(stickyNeighboursHashes, sum(2^((seq_len(length)+start) %% 7)))
-  
   layer[stickyNeighboursHashes] = STICKY
   
   # Usuwanie 4
   layer[layer==STICKY] = REMOVED;
   
   # Wybieranie 
-  indicesToCheck = which(layer == BORDER)
+  indicesToCheck = which(layer > REMOVED)
   
-  for()
-  
+  for(deletedVal in c(BORDER, ELBOWS))
+  {
+    for(index in indicesToCheck)
+    {
+      if(layer[index] == deletedVal)
+      {
+        layer[index] = 0
+        layerHash = CalculateLayerHash(layer)
+      }
+      else
+        layer[index] = 1
+    }
+  }
   layer
 }
 
 ## ---- K3M ----
 K3M <- function(layer){
+  newLayer = K3M.Iterative(layer)
+  while(!identical(newLayer, layer)){
+    layer = newLayer
+    newLayer = K3M.Iterative(layer)
+  }
+  layer
+}
+
+K3M.Iterative <- function(layer){
   borderLUT = c(3, 6, 7, 12, 14, 15, 24, 28, 30, 31, 48, 56, 60,
           62, 63, 96, 112, 120, 124, 126, 127, 129, 131, 135,
           143, 159, 191, 192, 193, 195, 199, 207, 223, 224,

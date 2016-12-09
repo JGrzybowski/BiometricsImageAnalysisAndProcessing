@@ -10,5 +10,9 @@ knitr::opts_chunk$set(echo = TRUE)
 source("ImageHelpers.R")
 ```
 
+```{r}
+finger.mini = readPNG("Fingerprint_mini.png") %>% inverted %>% grayscaled %>% binarized(function(x){x>0})
+finger.mini %>% paint
+```
 
 
