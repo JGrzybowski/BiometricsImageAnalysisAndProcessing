@@ -3,13 +3,26 @@ library(png)
 source("imageHelpers.R")
 source("helpers.R")
 
-REMOVED <- 0.0
-BORDER <- 0.2
-ELBOWS <- 0.3
-STICKY <- 0.4
-
+REMOVED <- 0
+BORDER <- 2
+ELBOWS <- 3
+STICKY <- 4
 
 ## ---- KMM ----
+KMM <- function(layer){
+  counter = 1
+  newLayer = KMM.Iteration(layer)
+  newLayer %>% paint
+  while(!identical(newLayer, layer)){
+    printToConsole(counter)
+    counter = counter + 1
+    layer = newLayer
+    newLayer = KMM.Iteration(layer)
+    newLayer %>% paint
+  }
+  layer
+}
+
 KMM.Iteration <- function(layer){
   maxH = getHeight(layer)
   maxW = getWidth(layer)
@@ -21,14 +34,14 @@ KMM.Iteration <- function(layer){
   
   # Oznaczanie 3
   elbowsHashes = 255 - (getPowSet(2^c(1,3,5,7))[2:16] %>% lapply(sum) %>% unlist)
-  layer[elbowsHashes] = ELBOWS
+  layer[layerHash %in% elbowsHashes] <- ELBOWS
   
   # Oznaczanie 4
   stickyNeighboursHashes = c()
   for(start in 0:7)
     for(length in 2:4)
       stickyNeighboursHashes = c(stickyNeighboursHashes, sum(2^((seq_len(length)+start) %% 7)))
-  layer[stickyNeighboursHashes] = STICKY
+  layer[layerHash %in% stickyNeighboursHashes] = STICKY
   
   # Usuwanie 4
   layer[layer==STICKY] = REMOVED;
@@ -54,15 +67,15 @@ KMM.Iteration <- function(layer){
 
 ## ---- K3M ----
 K3M <- function(layer){
-  newLayer = K3M.Iterative(layer)
+  newLayer = K3M.Iteration(layer)
   while(!identical(newLayer, layer)){
     layer = newLayer
-    newLayer = K3M.Iterative(layer)
+    newLayer = K3M.Iteration(layer)
   }
   layer
 }
 
-K3M.Iterative <- function(layer){
+K3M.Iteration <- function(layer){
   borderLUT = c(3, 6, 7, 12, 14, 15, 24, 28, 30, 31, 48, 56, 60,
           62, 63, 96, 112, 120, 124, 126, 127, 129, 131, 135,
           143, 159, 191, 192, 193, 195, 199, 207, 223, 224,
@@ -144,7 +157,7 @@ IterativePhase <- function(layer, borderIndexes, LUT){
       pixelHashes = CalculateLayerHash(layer)
     }
   }
-  
+  layer %>% paint
   layer
 }
 
@@ -170,6 +183,7 @@ CalculateLayerHash <- function(layer){
   
   windows = matrix(layer[dataIndexes], nrow=length(indexes))
   windows[is.na(windows)] = 0
+  windows = sign(windows)
   
   pixelHashes = windows %*% weights
   matrix(pixelHashes, ncol = maxW, nrow = maxH)

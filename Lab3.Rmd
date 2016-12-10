@@ -7,12 +7,21 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 source("ImageHelpers.R")
+source("Thinning.R")
 ```
 
-```{r}
-finger.mini = readPNG("Fingerprint_mini.png") %>% inverted %>% grayscaled %>% binarized(function(x){x>0})
-finger.mini %>% paint
+```{r echo = FALSE}
+finger.mini = readPNG("Fingerprint_mini.png") %>% inverted %>% grayscaled %>% binarized(function(x){x>0.4})
+
+finger.mini %>% KMM %>% writePNG("Fingerprint_mini_thin_KMM.png")
+
+finger.mini %>% K3M %>% writePNG("Fingerprint_mini_thin.png")
 ```
+![](./Fingerprint_mini.png)
+![](./Fingerprint_mini_thin_KMM.png)
+![](./Fingerprint_mini_thin.png)
+
 
 
