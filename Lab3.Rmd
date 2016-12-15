@@ -7,22 +7,87 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+library("png")
 source("ImageHelpers.R")
+source("Thinning.R")
 source("KMM.R")
 source("K3M.R")
+knitr::read_chunk('Thinning.R')
+knitr::read_chunk('K3M.R')
+knitr::read_chunk('KMM.R')
 ```
 
+# Obraz testowy
 ```{r echo = FALSE}
-finger.mini = readPNG("Fingerprint_mini.png") %>% inverted %>% grayscaled %>% binarized(function(x){x>0.4})
-
-finger.mini %>% KMM %>% writePNG("Fingerprint_mini_thin_KMM.png")
-
-finger.mini %>% K3M %>% writePNG("Fingerprint_mini_thin.png")
+finger.mini = loadImage.forThinning("Fingerprint_mini.png")
 ```
 ![](./Fingerprint_mini.png)
-![](./Fingerprint_mini_thin_KMM.png)
-![](./Fingerprint_mini_thin.png)
+
+# Hashowanie pikseli
+W poniższych algorymach opisujemy sąsiedztwo danego piksela za pomocą hash kodu.
+Jest on liczony następująco dla całego obrazu na raz.
+```{r HashCalculation}
+```
+
+# Algroytm KMM 
+Bazowany na opisie algorytmu dostepnym [TUTAJ][1]
+```{r KMM}
+```
+
+```{r KMM Iteration}
+```
+W implementacji KMM pominąłem oznaczanie pikseli z dwoma przystającymi sąsiadami jako do odrzucenia, ponieważ powodowało to "zjadanie" świanianego kształtu.
+
+## Przykład
+```{r Wywołanie KMM, eval = FALSE}
+finger.KMM = finger.mini %>% KMM 
+```
+
+Kolejne obrazy przedstawiają obraz po kolejnej iteracji algorytmu.
+
+![](./lab3/KMM01.png)
+![](./lab3/KMM02.png)
+![](./lab3/KMM03.png)
+![](./lab3/KMM04.png)
+![](./lab3/KMM05.png)
+![](./lab3/KMM06.png)
+![](./lab3/KMM07.png)
+![](./lab3/KMM08.png)
+![](./lab3/KMM09.png)
+![](./lab3/KMM10.png)
+![](./lab3/KMM11.png)
+![](./lab3/KMM12.png)
+![](./lab3/KMM13.png)
+![](./lab3/KMM14.png)
+![](./lab3/KMM15.png)
+![](./lab3/KMM16.png)
+![](./lab3/KMM17.png)
+![](./lab3/KMM18.png)
+![](./lab3/KMM19.png)
 
 
+# Algorytm K3M
+Bazowany na opisie algorytmu dostepnym [TUTAJ][2]
+```{r K3M}
+```
+## Pojedyńcza iteracja algorytmu
+```{r K3M Iteration}
+```
+Funkcje ```A1``` do ```A6``` oraz ```A1pix``` są wywołaniem poniższej funkcji z dodanym argumentem - listą kodów odpowiadającym rodzajom pikeseli do usunięcia z obrazu.
+```{r IterativePhase}
+```
 
+## Przykład
+```{r Wywołanie K3M, eval = FALSE}
+finger.K3M = finger.mini %>% K3M
+```
+Kolejne obrazy przedstawiają obraz po kolejnej iteracji algorytmu.
+Można zauważyć bardziej wygięte linie w stosunku do algorytmu KMM.
+
+![](./lab3/K3M01.png)
+![](./lab3/K3M02.png)
+![](./lab3/K3M03.png)
+![](./lab3/K3M04.png)
+
+[1]: http://yadda.icm.edu.pl/baztech/download/import/contents/BPB2-0005-0099-httpwww_wi_pb_edu_plplikinaukazeszytyz114-saeedrybniktabedzkiadamski.pdf.
+[2]: http://matwbn.icm.edu.pl/ksiazki/amc/amc20/amc2029.pdf

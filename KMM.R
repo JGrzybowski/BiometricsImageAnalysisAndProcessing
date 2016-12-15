@@ -15,40 +15,34 @@ for(length in 3:4)
     stickyNeighboursHashes = c(stickyNeighboursHashes, sum(2^((seq_len(length)+start-1) %% 8)))
 
 ## ---- KMM ----
-KMM <- function(layer, save.steps = F){
+KMM <- function(layer, save.steps = F, verbose = F){
   counter = 1
   newLayer = KMM.Iteration(layer, ifelse(save.steps, counter, 0))
   newLayer %>% paint
   
-  iterationCounter = 1
   while(!identical(newLayer, layer)){
-    printToConsole(counter)
+    if(verbose)
+      printToConsole(counter)
     layer = newLayer
+    counter = counter + 1
     newLayer = KMM.Iteration(layer, ifelse(save.steps, counter, 0))
     newLayer %>% paint
-    counter = counter + 1
   }
+  
   layer
 }
 
+
+## ---- KMM Iteration ----
 KMM.Iteration <- function(layer, iteration = 0){
-  maxH = getHeight(layer)
-  maxW = getWidth(layer)
-  
   # Oznaczanie 2
   layerHash = CalculateLayerHash(layer)
   borderIndexes = which((layer == 1) & (layerHash < 255) & (layerHash > 0))
   layer[borderIndexes] <- BORDER
-  
   # Oznaczanie 3
   layer[layerHash %in% elbowsHashes] <- ELBOWS
-  
   # Oznaczanie 4
   layer[(layer > 0) & (layerHash %in% stickyNeighboursHashes)] = STICKY
-  
-  if(iteration > 0)
-    (layer/STICKY) %>% writePNG(paste("A", formatC(iteration, width = 2, flag = 0), ".png", sep=""))
-  
   # Usuwanie 4
   layer[layer==STICKY] = REMOVED;
   
@@ -68,8 +62,13 @@ KMM.Iteration <- function(layer, iteration = 0){
         layer[index] = 1
     }
   }
+  if(iteration > 0)
+    layer %>% writePNG(paste("lab3/KMM", formatC(iteration, width = 2, flag = 0), ".png", sep=""))
+  
   layer
 }
+
+## ---- Deletion Array ----
 
 deletionArray <- c(  3,  5,  7, 12, 13, 14, 15, 20,
                     21, 22, 23, 28, 29, 30, 31, 48,
