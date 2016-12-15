@@ -1,4 +1,5 @@
 source("Filters.R")
+source("helpers.R")
 ## ---- Dilation ----
 
 dilation <- function(layer, filtr = matrix(c(1,1,1,1,0,1,1,1,1), nrow =3, ncol=3), repetitions  = 1){
@@ -102,13 +103,6 @@ test.erosion <- function(){
     print(expected-result)
   }
   
-}
-
-TimeTest <- function(fn){
-  ptm = proc.time()
-  v = fn
-  time =  proc.time() - ptm
-  list("time" = time, "fnResults" = v)
 }
 
 test.dilation()

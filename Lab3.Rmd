@@ -9,7 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 source("ImageHelpers.R")
-source("Thinning.R")
+source("KMM.R")
+source("K3M.R")
 ```
 
 ```{r echo = FALSE}
